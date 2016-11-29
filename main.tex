@@ -1,0 +1,126 @@
+\documentclass[conference]{IEEEtran}
+
+\input{mainmac}
+\input{pictures}
+
+\usepackage{microtype}
+%\def\baselinestretch{.98}
+
+% \title{Quantum Design Automation}
+\title{Design Automation Methods for Quantum Architectures}
+\author{%
+  \IEEEauthorblockN{Martin Roetteler \qquad Krysta M. Svore \qquad Nathan Wiebe}
+  \IEEEauthorblockA{%
+Microsoft Research, Redmond, WA, USA
+  }
+}
+
+\newcommand{\rev}[1]{\textcolor{red!60!black}{#1}}
+\usepackage[bold]{hhtensor}
+\usepackage{complexity}
+\usepackage{amsmath, amssymb, amsthm, amsfonts, latexsym}
+
+\usepackage[caption=false]{subfig}
+    \def\subfigureautorefname{Figure}
+
+\newcommand{\eq}[1]{Eq.~\hyperref[eq:#1]{(\ref*{eq:#1})}}
+\renewcommand{\sec}[1]{\hyperref[sec:#1]{Section~\ref*{sec:#1}}}
+\newcommand{\app}[1]{\hyperref[app:#1]{Appendix~\ref*{app:#1}}}
+\newcommand{\apx}[1]{\hyperref[apx:#1]{Appendix~\ref*{apx:#1}}}
+\newcommand{\tab}[1]{\hyperref[tab:#1]{Table~\ref*{tab:#1}}}
+\newcommand{\fig}[1]{\hyperref[fig:#1]{Figure~\ref*{fig:#1}}}
+\newcommand{\figa}[2]{\hyperref[fig:#1]{Figure~\ref*{fig:#1}#2}}
+\newcommand{\figx}[2]{\hyperref[fig:#1]{Figure~\ref*{fig:#1}(#2)}}
+\newcommand{\thm}[1]{\hyperref[thm:#1]{Theorem~\ref*{thm:#1}}}
+\newcommand{\lem}[1]{\hyperref[lem:#1]{Lemma~\ref*{lem:#1}}}
+\newcommand{\cor}[1]{\hyperref[cor:#1]{Corollary~\ref*{cor:#1}}}
+\newcommand{\defn}[1]{\hyperref[def:#1]{Definition~\ref*{def:#1}}}
+\newcommand{\alg}[1]{\hyperref[alg:#1]{Algorithm~\ref*{alg:#1}}}
+\newcommand{\prob}[1]{\hyperref[prob:#1]{Problem~\ref*{prob:#1}}}
+
+\newcommand{\up}[1]{\push{\raisebox{6pt}{$#1$}}}
+
+\newcommand{\ket}[1]{\left| #1\right\rangle}        % ket vector
+\newcommand{\bra}[1]{\left\langle #1\right|}        % bra vector
+\newcommand{\kets}[1]{| #1 \rangle}        % small ket vector
+\newcommand{\bras}[1]{\langle #1 |}        % small bra vector
+\newcommand{\braket}[2]{\langle #1 | #2 \rangle} % <x|y>
+\newcommand{\ketbra}[2]{| #1 \rangle\!\langle #2 |} % <x|y>
+\newcommand{\bigket}[1]{\left| #1\right\rangle}        % ket vector
+\newcommand{\bigbra}[1]{\left| #1\right\rangle}        % ket vector
+
+\usepackage[colorlinks]{hyperref}
+\usepackage{url}
+\usepackage{complexity}
+\usepackage{hypcap}
+
+
+\input{Qcircuit}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We survey the LIQ$Ui|\rangle$ framework for scalable quantum computing that allows to compile a high-level quantum programming language down to the fault-tolerant instruction set of an underlying a quantum computer architecture. We discuss why compilation and design automation tools such as the ones in our framework will be key for tackling the grand challenge of building a scalable quantum computer. We describe specialized libraries that have been developed using the LIQ$Ui|\rangle$ programming language, in particular for quantum arithmetic and highlight why these libraries will be useful for the implementation of many quantum algorithms. Finally, we survey the tools REVS and ReVer that facilitate resource efficient compilation of higher-level irreversible programs into lower-level reversible circuits while trying to optimize the memory footprint of the resulting reversible networks. This is motivated by the limited availability of qubits for the foreseeable future. 
+\end{abstract}
+
+\section{Introduction}
+\cite{PRS15}
+\section{Quantum programming} %Liquid
+
+\section{Reversible programming} %REVS and ReVer
+
+\section{Synthesis and optimization methods}% the DATE stuff
+
+\section{RUS framework and quantum arithmetic} %the numerical analysis stuff
+While we have made great strides towards synthesizing reversible circuits for execution on quantum computers an important question to ask is whether there exists other
+methods for performing arithmetic on quantum computers that have no classical analogues.  In particular, it is very common within quantum computing to have transformations
+that look like the following:
+\begin{equation}
+\ket{x}\ket{\psi} \rightarrow \ket{x}e^{if(x)Z}\ket{\psi},\label{eq:target}
+\end{equation}
+for some function $f$ that maps $\mathbb{B}_{n} \rightarrow \mathbb{R}$.  This form of transformation occurs in algorithms such as the Harrow, Hassidim and Lloyd algorithm for linear systems and also is ubiquitous in quantum machine learning algorithms.  If we were synthesizing the function $f$  through a reversible circuit we would be in essence approximating $\mathbb{F} \approx \mathbb{F}'$ where $\mathbb{F}' : \mathbb{B}_n \mapsto \mathbb{B}_m$ where $m$ is the number of bits of precision for the output.  Then conditioned on the $m$-bit output the required quantum transformation $e^{i f(x)Z}$ can be synthesized using $m$ controlled single-qubit rotations.  Since these $m$ qubits are only being used in an intermediate step in the algorithm, one may ask if this standard approach can be avoided.
+
+Our solution to this problem is inspired in part from the Fourier adder.  The Fourier adder takes advantage of the fact that, for any $(a,b) \in \mathbb{R}^2$
+\begin{equation}
+e^{ia Z} e^{ib Z} =e^{i(a+b)Z}.
+\end{equation}
+This shows that if $f(x)$ is a sum then we can use this structure to implement~\eq{target} without requiring any additional ancillae.  However, in order to do this for more general functions we need to have the ability to perform a non-linear operation, such as multiplication.  Since quantum mechanics is a linear theory such non-linear operations a challenge to devise.
+
+Our approach to generating these non-linearities exploits measurement, which is the only non-linear operation in quantum mechanics.
+
+\begin{figure*}[t!]
+\begin{minipage}{0.45\linewidth}
+\[ \Qcircuit @R 1em @C 1.5em { 
+\lstick{\ket 0}	&\gate{\phi_1}	&\ctrl{1}		&\gate{-\phi_1}	&\meter\\
+		&			&\up{\vdots}  	&				&\\
+\lstick{\ket 0}	&\gate{\phi_k}	&\ctrl{1}\qwx	&\gate{-\phi_k}		&\meter\\
+		&\qw			&\gate{-iX}	&\qw					&\qw}
+\]
+%\caption{Gearbox circuit with $k$ inputs\label{fig:GB}, where \\
+%the gate $\phi_j$ denotes $e^{-i \phi_j X}$.  Success is \\
+%achieved if~{every} measurement reads $0$.}
+\end{minipage}
+\hspace{0.5cm}
+\begin{minipage}{0.45\linewidth}
+\[ \Qcircuit @R 1em @C 1.5em { 
+\lstick{\ket 0}	&\gate{\phi_1}	&\ctrl{1}		&\multigate{2}{{\rm GHZ}^{-1}}	&\meter\\
+		&			&\up{\vdots}  	&				&\\
+\lstick{\ket 0}	&\gate{\phi_k}	&\ctrl{1}\qwx	&\ghost{{\rm GHZ}^{-1}}		&\meter\\
+		&\qw			&\gate{(i)^{k-1}X}	&\qw					&\qw}
+\]
+\end{minipage}
+\caption{Gearbox circuit (left) and generalized $\rm PAR$ circuit (right) with $k$ inputs\label{fig:PAR}, where 
+${\rm GHZ}^{-1}$ is the inverse GHZ measurement.  Success is 
+achieved if every measurement reads $0$.}
+
+\end{figure*}
+
+
+\subsubsection*{Acknowledgments} We thank the Cohen brothers for their fine work. They made this world a better place. 
+
+\bibliographystyle{IEEEtran}
+\bibliography{library}
+
+\end{document}
+

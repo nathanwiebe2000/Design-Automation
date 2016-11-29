@@ -1,0 +1,46 @@
+\usepackage{tikz}
+\usetikzlibrary{chains}
+
+\tikzset{%
+  box/.style={draw,text height=1.5ex,text depth=.5ex}
+}
+
+\newcommand{\tikzFlow}[3]{%
+  \begin{tikzpicture}
+    \begin{scope}[start chain,every node/.style={box,on chain},node distance=2cm]
+      \node (a) {Yosys};
+      \node (b) {ABC};
+      \node (c) {RevKit};
+    \end{scope}
+
+    \begin{scope}[every node/.style={text height=1.5ex,text depth=.5ex,inner sep=1pt,above,midway}]
+      \draw[<-] (a.west) -- ++(left:1.5cm) node {verilog};
+      \draw[->] (a) -- (b) node {blif};
+      \draw[->] (b) -- (c) node {#1};
+      \draw[->] (c.east) -- ++(right:1.5cm) node {real};
+    \end{scope}
+
+    \begin{scope}[every node/.style={align=center,anchor=north,font=\ttfamily\footnotesize}]
+      \node at (a.south) {read\_verilog \\ hierarchy \\ proc; flatten \\ opt; techmap; opt \\ write\_blif};
+      \node at (b.south) {#2};
+      \node at (c.south) {#3};
+    \end{scope}
+  \end{tikzpicture}
+}
+
+\newcommand{\tikzFlowESOP}{%
+  \tikzFlow{esop}
+           {read\_blif \\ st; clp; sop; fx \\ st; dc2 \\ \&get \\ \&exorcism}
+           {esopbs \\ write\_real}
+}
+
+\newcommand{\tikzFlowPLA}{%
+  \tikzFlow{pla}
+           {read\_blif \\ st \\ dc2$^5$ \\ clp \\ write\_pla}
+           {read\_pla \\ embed -b \\ tbs -s \\ write\_real}
+}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "notes"
+%%% End:
