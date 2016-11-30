@@ -64,7 +64,7 @@ Microsoft Research, Redmond, WA, USA
 \maketitle
 
 \begin{abstract}
-We survey the LIQ$Ui|\rangle$ framework for scalable quantum computing that allows to compile a high-level quantum programming language down to the fault-tolerant instruction set of an underlying a quantum computer architecture. We discuss why compilation and design automation tools such as the ones in our framework will be key for tackling the grand challenge of building a scalable quantum computer. We describe specialized libraries that have been developed using the LIQ$Ui|\rangle$ programming language, in particular for quantum arithmetic and highlight why these libraries will be useful for the implementation of many quantum algorithms. Finally, we survey the tools REVS and ReVer that facilitate resource efficient compilation of higher-level irreversible programs into lower-level reversible circuits while trying to optimize the memory footprint of the resulting reversible networks. This is motivated by the limited availability of qubits for the foreseeable future. 
+We survey recent strides made towards building the first framework capable of compiling quantum software all the way from a high-level algorithm description down to physical gates that can be implemented on a fault-tolerant quantum computer. We discuss why compilation and design automation tools such as the ones in our framework will be key for tackling the grand challenge of building a scalable quantum computer. We describe specialized libraries that have been developed using the \Liquid programming language as well, in particular for reversible circuits for arithmetic as well as new quantum approaches and highlight why these libraries will be useful for the implementation of many quantum algorithms. Finally, we survey the tools REVS and ReVer that facilitate resource efficient compilation of higher-level irreversible programs into lower-level reversible circuits while trying to optimize the memory footprint of the resulting reversible networks. This is motivated by the limited availability of qubits for the foreseeable future. 
 \end{abstract}
 
 \section{Introduction}
@@ -176,6 +176,18 @@ We see that while the Carry-Ripple multiplier requires more qubits as the precis
 
 As a final note, it should be observed that from the perspective of our synthesis algorithms there is nothing special about multiplication.  Indeed, we can synthesize any function that is analytic on a compact domain using the Taylor series approach.  Furthermore, this approach can also be used to implement a Chebyshev approximation to a function or even approximate an arbitrary function as a sum of piecewise constant functions~\cite{WR16}.  This flexibility shows that the basic ideas behind this approach are much more general and provides more than just the first genuinely quantum algorithms for arithmetic, but reveals a new type of ``quantum numerical analysis''.
 
+\section{Conclusion}
+As we progress from today's demonstrations of quantum technologies to tomorrows large scale quantum computers, we need to have 
+design automation and programming tools in place.  With out such tools, the challenges of designing and testing quantum circuits to implement meaningful
+algorithms by hand will be too daunting.  Here we have surveyed advances made within our framework that makes this dream possible.
+From the \Liquid programming language, to REVS, to automated design methods for quantum arithmetic and ReVer, we have provided a suite of tools
+that can realize this dream.
+
+While our framework provides a basic scaffolding for solving these problems, more work is needed.  While our automated tools for circuit design can outperform hand-crafted
+solutions in many cases, further optimizations will be needed to make the space or time resources needed less daunting.  Further optimizations of tools like ReVer will
+be needed to make formal verification of large reversible networks a reality.  Finally, we still need to think broadly about how to approach arithmetic or programming
+in quantum computing.  It is likely that we will find that while current approaches that mimic solutions that have been successful for classical computing provide adequate solutions here,
+the solutions of tomorrow may be fundamentally different than anything we can currently imagine.
 
 \subsubsection*{Acknowledgments} We thank the Coen brothers for their fine work. They made this world a better place. 
 
