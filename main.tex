@@ -37,6 +37,7 @@ Microsoft Research, Redmond, WA, USA
 \newcommand{\defn}[1]{\hyperref[def:#1]{Definition~\ref*{def:#1}}}
 \newcommand{\alg}[1]{\hyperref[alg:#1]{Algorithm~\ref*{alg:#1}}}
 \newcommand{\prob}[1]{\hyperref[prob:#1]{Problem~\ref*{prob:#1}}}
+\newcommand{\openone}{1\!\!1}
 
 \newcommand{\up}[1]{\push{\raisebox{6pt}{$#1$}}}
 
@@ -73,21 +74,6 @@ We survey the LIQ$Ui|\rangle$ framework for scalable quantum computing that allo
 \section{Synthesis and optimization methods}% the DATE stuff
 
 \section{RUS framework and quantum arithmetic} %the numerical analysis stuff
-While we have made great strides towards synthesizing reversible circuits for execution on quantum computers an important question to ask is whether there exists other
-methods for performing arithmetic on quantum computers that have no classical analogues.  In particular, it is very common within quantum computing to have transformations
-that look like the following:
-\begin{equation}
-\ket{x}\ket{\psi} \rightarrow \ket{x}e^{if(x)Z}\ket{\psi},\label{eq:target}
-\end{equation}
-for some function $f$ that maps $\mathbb{B}_{n} \rightarrow \mathbb{R}$.  This form of transformation occurs in algorithms such as the Harrow, Hassidim and Lloyd algorithm for linear systems and also is ubiquitous in quantum machine learning algorithms.  If we were synthesizing the function $f$  through a reversible circuit we would be in essence approximating $\mathbb{F} \approx \mathbb{F}'$ where $\mathbb{F}' : \mathbb{B}_n \mapsto \mathbb{B}_m$ where $m$ is the number of bits of precision for the output.  Then conditioned on the $m$-bit output the required quantum transformation $e^{i f(x)Z}$ can be synthesized using $m$ controlled single-qubit rotations.  Since these $m$ qubits are only being used in an intermediate step in the algorithm, one may ask if this standard approach can be avoided.
-
-Our solution to this problem is inspired in part from the Fourier adder.  The Fourier adder takes advantage of the fact that, for any $(a,b) \in \mathbb{R}^2$
-\begin{equation}
-e^{ia Z} e^{ib Z} =e^{i(a+b)Z}.
-\end{equation}
-This shows that if $f(x)$ is a sum then we can use this structure to implement~\eq{target} without requiring any additional ancillae.  However, in order to do this for more general functions we need to have the ability to perform a non-linear operation, such as multiplication.  Since quantum mechanics is a linear theory such non-linear operations a challenge to devise.
-
-Our approach to generating these non-linearities exploits measurement, which is the only non-linear operation in quantum mechanics.
 
 \begin{figure*}[t!]
 \begin{minipage}{0.45\linewidth}
@@ -112,12 +98,77 @@ Our approach to generating these non-linearities exploits measurement, which is 
 \end{minipage}
 \caption{Gearbox circuit (left) and generalized $\rm PAR$ circuit (right) with $k$ inputs\label{fig:PAR}, where 
 ${\rm GHZ}^{-1}$ is the inverse GHZ measurement.  Success is 
-achieved if every measurement reads $0$.}
+achieved if every measurement reads $0$.\label{fig:circuit}}
 
 \end{figure*}
 
+\begin{table*}[t!]
+\tiny
+\[
+\begin{tabular}{c@{\qquad}c@{\qquad}c@{\qquad}c}
+\hline\\
+Circuit & Function & Success probability& Correction circuit\\[1.5ex]
+\hline\\
+$e^{-i\phi_1 X} e^{-i\phi_2X}$ & $\phi_1+\phi_2$ & $100\%$& --\\[1.5ex]
+${\rm PAR}(\phi_1,\ldots,\phi_k)$ & $\prod_{i=1}^k \phi_i + O(\max_i |\phi_i|^{k+2})$&
+$\frac{1}{2}\left(\prod_{i=1}^k \cos(\phi_i)^2 + \prod_{i=1}^k \sin(\phi_i)^2\right)$ & $\openone\text{ or } 2{\rm PAR}(\phi_1,\ldots,\phi_k)$\\[1.5ex]
+%$\frac{1}{2}(\cos(\phi_1)^2\cdots\cos(\phi_k)^2 + \sin(\phi_1)^2\cdots\sin(\phi_k)^2)$ & $\openone\text{ or } 2{\rm PAR}(\phi_1,\ldots,\phi_k)$\\
+${\rm GB}(\phi_1,\ldots,\phi_k)$ & $\prod_{i=1}^k \phi^2_i + O(\max_i |\phi_i|^{2k+2})$&
+$\left(1-\prod_{i=1}^k \sin^2(\phi_i)\right)^2 + \prod_{i=1}^k \sin^4(\phi_i)$ &
+%$(1-\sin^2(\phi_1)\cdots\sin^2(\phi_k))^2+ \sin^4(\phi_1)\cdots \sin^4(\phi_k)$ 
+$e^{-i\pi/4 X}$ (Clifford)\\[1ex]
+\hline
+\end{tabular}
+\]
+\caption{Effective transformations carried out by the circuits in \fig{circuit} for small input rotations.\label{tab:succprob}}
+\end{table*}
+While we have made great strides towards synthesizing reversible circuits for execution on quantum computers an important question to ask is whether there exists other
+methods for performing arithmetic on quantum computers that have no classical analogues.  In particular, it is very common within quantum computing to have transformations
+that look like the following:
+\begin{equation}
+\ket{x}\ket{\psi} \rightarrow \ket{x}e^{if(x)Z}\ket{\psi},\label{eq:target}
+\end{equation}
+for some function $f$ that maps $\mathbb{B}_{n} \rightarrow \mathbb{R}$.  This form of transformation occurs in algorithms such as the Harrow, Hassidim and Lloyd algorithm for linear systems and also is ubiquitous in quantum machine learning algorithms.  If we were synthesizing the function $f$  through a reversible circuit we would be in essence approximating $\mathbb{F} \approx \mathbb{F}'$ where $\mathbb{F}' : \mathbb{B}_n \mapsto \mathbb{B}_m$ where $m$ is the number of bits of precision for the output.  Then conditioned on the $m$-bit output the required quantum transformation $e^{i f(x)Z}$ can be synthesized using $m$ controlled single-qubit rotations.  Since these $m$ qubits are only being used in an intermediate step in the algorithm, one may ask if this standard approach can be avoided.
 
-\subsubsection*{Acknowledgments} We thank the Cohen brothers for their fine work. They made this world a better place. 
+Our solution to this problem is inspired in part from the Fourier adder.  The Fourier adder takes advantage of the fact that, for any $(a,b) \in \mathbb{R}^2$
+\begin{equation}
+e^{ia Z} e^{ib Z} =e^{i(a+b)Z}.\label{eq:phaseadd}
+\end{equation}
+This shows that if $f(x)$ is a sum then we can use this structure to implement~\eq{target} without requiring any additional ancillae.  However, in order to do this for more general functions we need to have the ability to perform a non-linear operation, such as multiplication.  Since quantum mechanics is a linear theory such non-linear operations a challenge to devise.
+
+Our approach to generating these non-linearities exploits measurement, which is the only non-linear operation in quantum mechanics.  We use two circuits shown in~\fig{circuit} to generate these transformations.  These circuits take its inputs as the rotation angles that specify a given single-qubit rotation.  They then aim to output a rotation that rotates a qubit through an angle that is approximately the product of the input rotation angles (PAR circuit), or product of their squares (GB circuit).  These circuits achieve this, with high probability, given that their inputs are small.  Furthermore, they can be corrected and the operation can be tried anew if and when they fail.  This ``repeat-until-success'' aspect of these circuits is key to their efficiency.
+
+An amazing feature of this approach to constructing an approximate multiplier is that two small numbers can be multiplied in this fashion using only $2$ ancillary qubits independent of the precision of the inputs.  This is because we use an analog degree of freedom, rather than a digital representation, to store the result.  There is, of course, no free lunch.  Higher precision necessitates more error correction, but this only incurrs a logarithmic space overhead and often will be irrelevant given the exacting precision already required of quantum computers by certain algorithms.
+
+Larger numbers can be multiplied using these circuits using ideas from split operator formulas.  In particular, ${\rm PAR}( a,b) = ab + O(\max(a,b)^4)$ and hence for any integer $r>0$,
+$r{\rm PAR}(a/\sqrt{r},b/\sqrt{r})=ab + O(\max(a,b)^4/r)$.  Here multiplication by $r$ is implimented by repeating the circuit $r$ times by using~\eq{phaseadd}.  Hence by taking $r\rightarrow \infty$ the error can be made arbitrarily small.  Similar tricks, used in concert with an algorithm called oblivious amplitude amplification, can be used to make the success probability asymptotically independent of the input rotation angles.
+
+This simple version of the algorithm can be optimized by constructing higher-order multiplication formulas that use GB and PAR to construct a higher-order Taylor series approximation to the product.  As an example ${ab=\rm PAR}(a,b,\frac{\pi}{4}- {\rm GB}(\gamma_2,a)-{\rm GB}(b,\phi_2))+ O(\max(a,b)^6)$ for $\gamma_2 =\arcsin(1/\sqrt{6})$.  We refer to these two lowest order formulas as $M_4$ and $M_6$ respectively.  By iteratively increasing the order of accuracy of the multiplier, $r$ can be made to grow sub-polynomially with the error tolerance.
+
+We examine the performance of these multipliers in the table below relative to carry-ripple adders and Table-lookup for computing $0.5^2$ at $n=8,16$ bits of precision in the output.
+\begin{table}[h!]
+\centering
+\footnotesize
+\begin{tabular}{c@{\qquad}c@{\quad}c@{\qquad}c@{\quad}c@{\qquad}c@{\quad}c@{\qquad}c@{\quad}c}
+\hline\\
+Multiplier & \multicolumn{2}{c}{$n=8$\phantom{111}} & \multicolumn{2}{c}{$n=16$} \\[0.5ex]
+method      & $T$-count & qubits & $T$-count & qubits \\[1.5ex]
+\hline\\
+Carry-ripple & 2.80E+03 & 16 & 1.06E+04  &32\\[1.5ex]
+Table-lookup  & 3.98E+09 & 2 & 1.13E+13& 2\\[1.5ex]
+$M_4$  &4.64E+04 &4 &3.00E+07 &4 \\[1.5ex] 
+$M_6$  &3.82E+03 &4 & 5.21E+05&5 \\[1.5ex] 
+%$M_8$ & & & & & & & & \\[1ex] 
+\hline
+\end{tabular}
+\end{table}
+
+We see that while the Carry-Ripple multiplier requires more qubits as the precision increases, our multiplier $M_4$ does not.  In fact, the only reason why $M_6$ needs an extra qubit at $n=16$ is because that is the first time where $r>1$ is needed.  This forces us to apply the entire circuit as an RUS-circuit and which forces us to use an additional qubit.  No additional ancillary qubits will be needed as we increase $n$ beyond $16$ for $M_6$.  The number of $T$--gates is intermediate between Table-lookup (which is untenable here) and the Carry-Ripple multiplier.  This demonstrates the space efficiency of our approach and shows that genuinely quantum methods for arithmetic are possible that can reach better tradeoffs between resources than classical strategies can.
+
+As a final note, it should be observed that from the perspective of our synthesis algorithms there is nothing special about multiplication.  Indeed, we can synthesize any function that is analytic on a compact domain using the Taylor series approach.  Furthermore, this approach can also be used to implement a Chebyshev approximation to a function or even approximate an arbitrary function as a sum of piecewise constant functions.  This flexibility shows that the basic ideas behind this approach are much more general and provides more than just the first genuinely quantum algorithms for arithmetic, but reveals a new type of ``quantum numerical analysis''.
+
+
+\subsubsection*{Acknowledgments} We thank the Coen brothers for their fine work. They made this world a better place. 
 
 \bibliographystyle{IEEEtran}
 \bibliography{library}
