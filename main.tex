@@ -88,19 +88,19 @@ In this paper, we will discuss work we have done towards solving these problems 
 \section{Reversible programming} %REVS and ReVer
 
 \section{Synthesis and optimization methods}% the DATE stuff
+Tools for reversible circuit synthesis, such as REVS,  can be used hand in hand with conventional circuit design methods to find highly
+efficient quantum circuits for arithmetic or logic circuits.  Our approach is outlined in~\fig{design-flows}, which illustrates how we can
 
 
 
 \begin{figure}[t]
   \centering
   \input{pictures/design-flows.tikz}
-  \caption{Design flows; lines represent interfaces between files and tools and
-    are annotated using the function representation at the interface}
+  \caption{Design flows; lines represent interfaces between files and tools for synthesizing a function, such as $1/x$, from an initial specification such as integer division or Newton's method.}
   \label{fig:design-flows}
 \end{figure}
 
 \begin{table*}[t]
-  \caption{Baseline results with manual design}
   \label{tbl:qnewton}
   \catcode`\_=\active\def_{\hskip1ex}%
   \begin{tabularx}{\linewidth}{Xrrrrrrrrrr}
@@ -113,8 +113,9 @@ In this paper, we will discuss work we have done towards solving these problems 
     _32 & \rev{192} & \rev{141\,568} & -  & -& -  & -  & - & - & 3\,501 & 21\,455 \\
     _64 & \rev{384} & \rev{569\,856} & -  & -& - & - & - & - & 13\,465 & 80\,339 \\
  %   128 & 387 & 578\,823 &      &             \\
-\hline
+\hline\\
   \end{tabularx}
+  \caption{Synthesis of $f(x)=1/x$ using a hand-crafted restoring division circuit (\texttt{RESDIV}), functional synthesis, ESOP based synthesis using REVS and hierarchical synthesis.  All circuits are based on VERILOG files for integer division.}
 \end{table*}
 
 
