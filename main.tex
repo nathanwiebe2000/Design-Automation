@@ -14,7 +14,7 @@ Microsoft Research, Redmond, WA, USA
   }
 }
 
-\newcommand{\rev}[1]{\textcolor{red!60!black}{#1}}
+\newcommand{\rev}[1]{{#1}}
 \usepackage[bold]{hhtensor}
 \usepackage{complexity}
 \usepackage{amsmath, amssymb, amsthm, amsfonts, latexsym}
@@ -58,7 +58,14 @@ Microsoft Research, Redmond, WA, USA
 \newcommand{\Liquid}{LIQ$Ui\ket{}$\ }
 \newcommand{\LiquidB}{LIQ$\bm{Ui\ket{}}$}
 
+\usepackage{tabularx}
+
 \input{Qcircuit}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+
 \begin{document}
 
 \maketitle
@@ -81,6 +88,35 @@ In this paper, we will discuss work we have done towards solving these problems 
 \section{Reversible programming} %REVS and ReVer
 
 \section{Synthesis and optimization methods}% the DATE stuff
+
+
+
+\begin{figure}[t]
+  \centering
+  \input{pictures/design-flows.tikz}
+  \caption{Design flows; lines represent interfaces between files and tools and
+    are annotated using the function representation at the interface}
+  \label{fig:design-flows}
+\end{figure}
+
+\begin{table*}[t]
+  \caption{Baseline results with manual design}
+  \label{tbl:qnewton}
+  \catcode`\_=\active\def_{\hskip1ex}%
+  \begin{tabularx}{\linewidth}{Xrrrrrrrrrr}
+\hline
+    & \multicolumn{2}{c}{\texttt{RESDIV$(n)$}} & \multicolumn{2}{c}{\texttt{FUNCTIONAL$(n)$}}& \multicolumn{2}{c}{\texttt{REVS$(n)$}, $p=0$} & \multicolumn{2}{c}{\texttt{REVS$(n)$}, $p=1$} & \multicolumn{2}{c}{\texttt{HIERARCHICAL$(n)$}}\\
+\hline
+    $n$ & qubits & $T$-count & qubits & $T$-count \\[3pt]
+    __8 & \rev{48}  & \rev{8\,512}   & 16 & 1\,342 & 15  & 51\,386 &20 & 1\,349 & - &-    \\
+    _16 & \rev{96}  & \rev{34\,944}  & 31  & 71\,115\,285 & 32 &52\,376& 46 & 42\,717 & 892 & 5\,607     \\
+    _32 & \rev{192} & \rev{141\,568} & -  & -& -  & -  & - & - & 3\,501 & 21\,455 \\
+    _64 & \rev{384} & \rev{569\,856} & -  & -& - & - & - & - & 13\,465 & 80\,339 \\
+ %   128 & 387 & 578\,823 &      &             \\
+\hline
+  \end{tabularx}
+\end{table*}
+
 
 \section{RUS framework and quantum arithmetic} %the numerical analysis stuff
 
