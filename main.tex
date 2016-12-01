@@ -486,7 +486,7 @@ One approach to generating non-linearities exploits measurement, which is the on
 A feature of this approach to constructing an approximate multiplier is that two small numbers can be multiplied in this fashion using only $2$ ancillary qubits independent of the precision of the inputs.  This is because we use an analog degree of freedom, rather than a digital representation, to store the result.  There is, of course, no free lunch.  Higher precision necessitates more error correction, but this only incurrs a logarithmic space overhead and often will be irrelevant given the exacting precision already required of quantum computers by certain algorithms.
 
 Larger numbers can be multiplied using these circuits using ideas from split operator formulas.  In particular, ${\rm PAR}( a,b) = ab + O(\max(a,b)^4)$ and hence for any integer $r>0$,
-$r{\rm PAR}(a/\sqrt{r},b/\sqrt{r})=ab + O(\max(a,b)^4/r)$.  Here multiplication by $r$ is implemented by repeating the circuit $r$ times.  Hence by taking $r\rightarrow \infty$ the error can be made arbitrarily small.  Similar tricks, and an algorithm called oblivious amplitude amplification, can be used to make the success probability asymptotically independent of the input rotation angles.
+$r{\rm PAR}(a/\sqrt{r},b/\sqrt{r})=ab + O(\max(a,b)^4/r)$.  Here multiplication by $r$ is implemented by repeating the circuit $r$ times.  Hence by taking $r\rightarrow \infty$ the error can be made arbitrarily small.  Similar tricks, and an algorithm called oblivious amplitude amplification, can be used to make the success probability asymptotically independent of the input rotation angles~\cite{WR16}.
 
 This simple version of the algorithm can be optimized by constructing higher-order multiplication formulas that use GB and PAR to construct a higher-order Taylor series approximation to the product.  As an example ${ab=\rm PAR}(a,b,\frac{\pi}{4}- {\rm GB}(\gamma_2,a)-{\rm GB}(b,\phi_2))+ O(\max(a,b)^6)$ for $\gamma_2 =\arcsin(1/\sqrt{6})$.  We refer to these two lowest order formulas as $M_4$ and $M_6$ respectively.  By iteratively increasing the order of accuracy of the multiplier, $r$ can be made to grow sub-polynomially with the reciprocal of the error tolerance~\cite{WR16}.
 
@@ -508,9 +508,9 @@ $M_6$  &3.82E+03 &4 & 5.21E+05&5 \\
 \end{tabular}
 \end{table}
 
-We see that while the Carry-Ripple multiplier requires more qubits as the precision increases, our multiplier $M_4$ does not.  In fact, the only reason why $M_6$ needs an extra qubit at $n=16$ is because that is the first time where $r>1$ is needed.  This forces us to apply the entire circuit as an RUS-circuit and which forces us to use an additional qubit.  No additional ancillary qubits will be needed as we increase $n$ beyond $16$ for $M_6$.  The number of $T$--gates is intermediate between Table-lookup (which is untenable here) and the Carry-Ripple multiplier.  This demonstrates the space efficiency of our approach and shows that genuinely quantum methods for arithmetic are possible that can reach better tradeoffs between resources than classical strategies can.
+We see that while the Carry-Ripple multiplier requires more qubits as the precision increases, our multiplier $M_4$ does not.  In fact, the only reason why $M_6$ needs an extra qubit at $n=16$ is because that is the first time where $r>1$ is needed.  This forces us to apply the entire circuit as an RUS-circuit and which requires us to use an additional qubit.  No additional ancillary qubits will be needed as we increase $n$ beyond $16$ for $M_6$.  The number of $T$--gates is intermediate between Table-lookup (which is untenable here) and the Carry-Ripple multiplier.  This demonstrates the space efficiency of our approach and shows that genuinely quantum methods for arithmetic are possible that can reach better tradeoffs between resources than classical strategies can.
 
-As a final note, it should be observed that from the perspective of our synthesis algorithms there is nothing special about multiplication.  We can synthesize any function that is analytic on a compact domain using the Taylor series approach.  Furthermore, this approach can also be used to implement a Chebyshev approximation to a function or even approximate an arbitrary function as a sum of piecewise constant functions~\cite{WR16}.  This flexibility shows that the basic ideas behind this approach are much more general than it may seem at first glance. The ability to compute arbitrary functions in the phase of a qubit provides more than just the first genuinely quantum algorithms for arithmetic: it reveals a new type of ``quantum numerical analysis''.
+As a final note, from the perspective of our synthesis algorithms there is nothing special about multiplication.  We can synthesize any function that is analytic on a compact domain using the Taylor series approach.  Furthermore, this approach can also be used to implement a Chebyshev approximation to a function or even approximate an arbitrary function as a sum of piecewise constant functions~\cite{WR16}.  This flexibility shows that the basic ideas behind this approach are much more general than it may seem at first glance. The ability to compute arbitrary functions in the phase of a qubit provides more than just the first genuinely quantum algorithms for arithmetic: it reveals a new type of ``quantum numerical analysis''.
 
 \section{Conclusion}
 As we progress from today's demonstrations of quantum technologies to tomorrows large scale quantum computers, we need to have 
@@ -518,8 +518,8 @@ design automation and programming tools in place.  Without such tools, the chall
 algorithms by hand will be too daunting. 
 
  Finally, we still need to think broadly about how to approach arithmetic or programming
-in quantum computing.  It is likely that we will find that while present-day approaches that mimic solutions that have been successful for classical computing provide adequate solutions for now,
-the solutions of tomorrow may be fundamentally different than anything we can currently imagine.
+in quantum computing. While present-day approaches that mimic solutions that have been successful for classical computing provide adequate solutions for now,
+it is likely that the solutions of tomorrow may fundamentally differ from anything we can currently imagine.
 
 
 \bibliographystyle{IEEEtran}
