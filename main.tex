@@ -13,7 +13,7 @@
 % \title{Quantum Design Automation}
 \title{Design Automation for Quantum Architectures}
 \author{%
-  \IEEEauthorblockN{Martin Roetteler \qquad Krysta M. Svore \qquad Nathan Wiebe}
+  \IEEEauthorblockN{Martin Roetteler \qquad Krysta M. Svore \qquad Dave Wecker \qquad Nathan Wiebe}
   \IEEEauthorblockA{%
 Microsoft Research, Redmond, WA, USA
   }
@@ -180,8 +180,8 @@ Furthermore, there are toolkits such as CirKit/RevKit~\cite{SFWD12} that can ass
 In the following we describe the approach underlying \LIQUID~\cite{WS:2014}, which is a functional quantum programming language embedded in the .NET host language F\# and developed at Microsoft Research. \LIQUID~is fundamentally a circuit description language for quantum circuits, however, it also provides support for higher level programming that ultimately will help a programmer to develop quantum computational thinking that is not necessarily centered around circuits but rather on the mathematical functions that are the abstractions of concrete embodiments given by circuits. 
 
 In contrast to many of the mentioned approaches, \Liquid was designed and architected explicitly with quantum hardware in mind. 
-For instance, one of the underlying design assumptions is that qubits are real entities, have lifetimes and are fundamentally mutable objects which led to the choice to make the basic qubit type reflects this reality.
-Also, while other languages also come equipped with simulators, \Liquid's simulators are highly optimized, taking advantage of many available techniques, including custom memory management, cache coherence analysis, parallelization, ``gate growing", and virtualization (running in the cloud). \Liquid's highly optimized simulation environment allows thorough investigation of quantum algorithms under noise, physical device constraints, and simulation.
+For instance, one of the underlying design assumptions is that qubits are real entities, have lifetimes and are fundamentally mutable objects, which led to the choice of our basic qubit type.
+Also, while other languages also come equipped with simulators, the \Liquid simulators are highly optimized, taking advantage of many available techniques, including custom memory management, cache coherence analysis, parallelization, ``gate growing", and virtualization (running in the cloud). The \Liquid simulation environment allows thorough investigation of quantum algorithms under noise, physical device constraints, and simulation.
 
 
 \begin{figure}[t]
@@ -233,7 +233,8 @@ A general overview of the \LIQUID~software architecture is shown in \fig{arch}. 
 
 \noindent $\bullet$ {\em Language}: The embedding into F\# was chosen primarily due to .NET support, object-oriented and functional programming, ease of using reflection and pattern matching which helps with walking complex datastructures, plus the availability of many external libraries. Additions introduced by \Liquid to the host language include types {\sc Qubit}, {\sc Ket}, {\sc Gate}, {\sc Operation}, and {\sc Circuit}. Notably, besides von Neumann measurements, \Liquid also supports also POVMs as a basic gate type. 
 
-\noindent $\bullet$ {\em Functions}: The most basic, but at the same time: most important, example of a function is the one of an executable gate. All \Liquid gates are user functions or class instances that can be extended by the user in many ways. Note that while it is possible to apply introspection to a function (such as asking e.g. whether it corresponds to a unitary operator), it is not mapped to a circuit yet. This allows the freedom to allow many different possible abstract interpretations for any given \Liquid function.%: one can simulate it on several different runtimes, one can render it into many different graphical representations, one can transform it into a circuit which then itself can be turned into different futher representations, i.e., quantum instructions can be emitted that can be executed by actual quantum computer hardware. Also, examples of functions arise in generator libraries which are executable programs that produce functions open instantiation with given parameter values. For example, signal processing transforms such as discrete Fourier, sine, cosine, and wavelet transforms of a given length, or arithmetic operations of given bitsize. Finally, there are compilers for specific tasks such as the compilation of classical, irreversible code into \Liquid functions that can then be further processes. One such tool is the mentioned \REVS compiler. 
+\noindent $\bullet$ {\em Functions}: The most basic, but at the same time: most important, example of a function is the one of an executable gate. All \Liquid gates are user functions or class instances that can be extended by the user in many ways. Note that while it is possible to apply introspection to a function (such as asking e.g. whether it corresponds to a unitary operator), it is not mapped to a circuit yet. This allows the freedom to allow many different possible abstract interpretations for any given \Liquid function. %: one can simulate it on several different runtimes, one can render it into many different graphical representations, one can transform it into a circuit which then itself can be turned into different futher representations, i.e., quantum instructions can be emitted that can be executed by actual quantum computer hardware. Also, examples of functions arise in generator libraries which are executable programs that produce functions open instantiation with given parameter values. For example, signal processing transforms such as discrete Fourier, sine, cosine, and wavelet transforms of a given length, or arithmetic operations of given bitsize. 
+The \REVS~compiler, shown as dashed box in \fig{arch} can compile  classical, irreversible code into \Liquid functions that can then be further processed. 
 
 \noindent $\bullet$ {\em Circuits}: This level deals with the data structures that most researchers in quantum computing are familiar with: circuits that are composed over an elementary gate set and operate on a certain number of qubits. Many ways to manipulate circuits are possible, including a) further decomposition into lower level gates, b) peep-hole style optimization via rewriting, c) optimizations for trading off size and width, d) resource estimation, e) wrapping with fault-tolerance methods. 
 
@@ -293,7 +294,7 @@ trade-off is justified by the limited number of qubits available in experimental
  Shown is a grammar, i.e., a set of production rules. Variables are denoted by {\bf Var}, values by {\bf Val}, and terms by {\bf Term}.}
 
  The current implementation of the \REVS~compiler supports Booleans as basic types only. The core of the language is a simple imperative language over Boolean and array (register) types. The language is further extended with ML-style functional features, namely first-class functions and \emph{let} definitions, and a reversible domain-specific construct \emph{clean}. It should be noted also that \REVS~was designed to facilitate interoperability with the quantum programming language \LIQUID{}.
-An example \REVS~program is shown in Figure \ref{fig:rippleCode}(a). This example implements a simple carry ripple adder of two $n$-bit integers. Shown in (b) is one of the possible target intermediate representations, namely \LIQUID{} code. 
+An example \REVS~program is shown in \fig{rippleCode}(a). This example implements a simple carry ripple adder of two $n$-bit integers. Shown in (b) is one of the possible target intermediate representations, namely \LIQUID{} code. 
 
 
 \begin{figure*}[hbt]
